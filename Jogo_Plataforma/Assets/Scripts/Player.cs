@@ -8,6 +8,8 @@ public class Player : MonoBehaviour
     private SpriteRenderer sr;
     public float jumpForce;
     public bool inFloor = true;
+    public bool doubleJump;
+    public bool triploJump;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -52,11 +54,38 @@ public class Player : MonoBehaviour
     }
     void Jump()
     {
-        if (Input.GetButtonDown("Jump") && inFloor)
+        if (Input.GetButtonDown("Jump"))
         {
-            playerAnim.SetBool("Jump", true);
-            rbPlayer.AddForce(new Vector2(0,jumpForce), ForceMode2D.Impulse);
-            inFloor = false;
+            if (inFloor)
+            {
+                rbPlayer.linearVelocity = Vector2.zero;
+                playerAnim.SetBool("Jump", true);
+                rbPlayer.AddForce(new Vector2(0,jumpForce), ForceMode2D.Impulse);
+                inFloor = false;
+                doubleJump = true;
+
+            }
+            else if (!inFloor && doubleJump)
+            {
+                rbPlayer.linearVelocity = Vector2.zero;
+                playerAnim.SetBool("Jump", true);
+                rbPlayer.AddForce(new Vector2(0,jumpForce), ForceMode2D.Impulse);
+                inFloor = false;
+                doubleJump = false;
+                triploJump = true;
+
+            }
+            else if (!inFloor && triploJump)
+            {
+                rbPlayer.linearVelocity = Vector2.zero;
+                playerAnim.SetBool("Jump", true);
+                rbPlayer.AddForce(new Vector2(0,jumpForce), ForceMode2D.Impulse);
+                inFloor = false;
+                doubleJump = false;
+                triploJump = false;
+
+            }
+            
         }
     }
     private void OnCollisionEnter2D(Collision2D collision)
@@ -65,6 +94,8 @@ public class Player : MonoBehaviour
         {
             playerAnim.SetBool("Jump", false);
             inFloor = true;
+            doubleJump = false;
+            triploJump = false;
 
         }
     }
